@@ -220,11 +220,25 @@ ExpDecaySample::Impl::MakeSnapshot() const
     std::vector<WeightedValue> wvals;
     wvals.reserve(values_.size());
 
+    // only pick data within the window
+    auto const highPriority = (--values_.end())->first;
+
+    auto const lowPriority =
+        highPriority *
+        std::exp(-alpha_ * (SNAPSHOT_WINDOW_SECONDS + BLEED_TIME_SECONDS));
+
+    auto lowIt = values_.lower_bound(lowPriority);
+
     double totWeight = 0;
-    for (auto const& kv : values_)
+    for (auto it = lowIt; it != values_.end(); it++)
     {
-        wvals.emplace_back(kv.second);
-        totWeight += kv.second.weight;
+        wvals.emplace_back(it->second);
+        totWeight += it->second.weight;
+    }
+
+    if (wvals.empty() || totWeight == 0.0)
+    {
+        return {vals};
     }
 
     std::sort(wvals.begin(), wvals.end(),
