@@ -102,6 +102,14 @@ ExpDecaySample::Impl::Impl(std::uint32_t reservoirSize, double alpha)
     , rng_{std::random_device()()}
     , dist_(0.0, 1.0)
 {
+    auto thrSeconds =
+        std::chrono::duration_cast<std::chrono::seconds>(kRESCALE_THRESHOLD);
+    // see if we'd exhaust the mantissa when combining weights
+    if (std::floor(std::log10(std::exp(alpha_ * thrSeconds.count()))) + 1 >= 15)
+    {
+        throw std::invalid_argument(
+            "Value of alpha not compatible with rescale threshold");
+    }
     Clear();
 }
 
