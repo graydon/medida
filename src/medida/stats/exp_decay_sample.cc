@@ -21,6 +21,8 @@ namespace stats
 {
 
 static const Clock::duration kRESCALE_THRESHOLD = std::chrono::hours{1};
+static const double BLEED_TIME_SECONDS = 30;
+static const double SNAPSHOT_WINDOW_SECONDS = 60;
 
 class ExpDecaySample::Impl
 {
@@ -141,7 +143,10 @@ ExpDecaySample::Impl::Update(std::int64_t value, Clock::time_point timestamp)
                                                                 startTime_);
     auto itemWeight = std::exp(alpha_ * dur.count());
 
-    auto priority = itemWeight / dist_(rng_);
+    // priority is weight adjusted up to BLEED_TIME_SECONDS seconds into the
+    // future
+    auto priority = std::exp(
+        alpha_ * (double(dur.count()) + BLEED_TIME_SECONDS * dist_(rng_)));
     auto count = ++count_;
 
     WeightedValue wv = {value, itemWeight};
