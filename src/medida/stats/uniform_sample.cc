@@ -64,7 +64,7 @@ Snapshot UniformSample::MakeSnapshot() const {
 UniformSample::Impl::Impl(std::uint32_t reservoirSize)
     : count_          {},
       values_         (reservoirSize), // FIXME: Explicit and non-uniform
-      rng_            {std::random_device()()},
+      rng_{std::default_random_engine()()},
       mutex_          {} {
     Clear();
 }

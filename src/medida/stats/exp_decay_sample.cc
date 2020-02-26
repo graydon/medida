@@ -99,7 +99,7 @@ ExpDecaySample::Impl::Impl(std::uint32_t reservoirSize, double alpha)
     : alpha_{alpha}
     , reservoirSize_{reservoirSize}
     , count_{}
-    , rng_{std::random_device()()}
+    , rng_{std::default_random_engine()()}
     , dist_(0.0, 1.0)
 {
     auto thrSeconds =
