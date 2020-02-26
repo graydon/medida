@@ -13,7 +13,9 @@
 
 namespace medida {
 
-static const double kDefaultAlpha = 0.015;
+// after 1 minute, samples have 100 times less weight
+// ln(100)/60 = 0.0768
+static const double kDefaultAlpha = 0.0768;
 
 class Histogram::Impl {
  public:

@@ -20,7 +20,7 @@ namespace medida
 namespace stats
 {
 
-static const Clock::duration kRESCALE_THRESHOLD = std::chrono::hours{1};
+static const Clock::duration kRESCALE_THRESHOLD = std::chrono::minutes{6};
 static const double BLEED_TIME_SECONDS = 30;
 static const double SNAPSHOT_WINDOW_SECONDS = 60;
 
